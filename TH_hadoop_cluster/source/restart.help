@@ -1,0 +1,7 @@
+usage: hadoop_cluster.py restart [-h] cluster_dir
+
+positional arguments:
+  cluster_dir  directory to deploy hadoop cluster
+
+optional arguments:
+  -h, --help   show this help message and exit

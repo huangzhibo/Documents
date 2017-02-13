@@ -1,0 +1,8 @@
+optional arguments:
+  -h, --help            show this help message and exit
+
+subcommands:
+  {start,restart,stop}  sub-command help
+    start               start hadoop cluster
+    restart             restart hadoop cluster
+    stop                stop hadoop cluster

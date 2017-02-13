@@ -1,0 +1,13 @@
+usage: hadoop_cluster.py start [-h] [-n NODE_NUM] [-d CLUSTER_DIR]
+                               [-s SOURCE_DIR] [-p PARTITION]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -n NODE_NUM, --node_number NODE_NUM
+                        number of nodes to run hadoop service [10] .
+  -d CLUSTER_DIR, --cluster_dir CLUSTER_DIR
+                        directory to deploy hadoop cluster
+  -s SOURCE_DIR, --source_dir SOURCE_DIR
+                        dir contains conf and hadoop program package(.tar.gz).
+  -p PARTITION, --partition PARTITION
+                        Only the node in these partitions can be used.

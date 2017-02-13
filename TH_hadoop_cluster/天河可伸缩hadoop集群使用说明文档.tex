@@ -1,0 +1,125 @@
+\documentclass[UTF8,10pt,a4paper]{ctexart}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+
+
+%画图包
+%\usepackage{tikz}
+\usepackage{tikz,tkz-tab}
+\usetikzlibrary{shapes,arrows,backgrounds}
+\usepackage{amsmath,bm,times}
+\usepackage{xcolor} %代码高亮
+
+
+%表格
+\usepackage{tabularx,colortbl}
+\newcommand{\gray}{\rowcolor[gray]{.90}} % Custom highlighting for the work experience and education sections
+
+%字体
+\usepackage{fontspec,xltxtra,xunicode}
+%\defaultfontfeatures{Mapping=tex-text}
+\setmonofont[Mapping={}]{Times New Roman} %让导入的代码引号直立
+%\setmonofont{Consolas}
+%\setromanfont{STZhongsong}
+%\setmainfont{Times New Roman} 
+
+%section
+\ctexset{section/format=\Large\bfseries}
+
+%图片导入
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float}
+\graphicspath{{./figs/}{./}{./figs2/}}
+
+%logo & 页眉
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{\includegraphics[scale=0.1]{BGIlogo.png}}
+
+%附录                                                                                                                                                                                
+\usepackage[titletoc]{appendix}
+
+%超链接
+%\usepackage[hyperfootnotes=true]{hyperref}
+\usepackage[colorlinks,
+            linkcolor=red,
+            anchorcolor=blue,
+            citecolor=green,
+            urlcolor=blue]{hyperref}
+
+
+%原文照列
+\usepackage{verbatim}
+\usepackage{clrscode}
+\usepackage{listings} %插入代码
+ 
+\lstset{numbers=left, %设置行号位置
+	backgroundcolor=\color[RGB]{245,245,244},
+	basicstyle=\footnotesize,
+	showstringspaces=false,
+        numberstyle=\tiny, %设置行号大小
+        keywordstyle=\color{blue}, %设置关键字颜色
+        commentstyle=\color[cmyk]{1,0,1,0}, %设置注释颜色
+        frame=single, %设置边框格式
+   %     escapeinside=``, %逃逸字符(1左面的键)，用于显示中文
+       basicstyle=\scriptsize\ttfamily,
+        breaklines, %自动折行
+        extendedchars=false, %解决代码跨页时，章节标题，页眉等汉字不显示的问题
+        xleftmargin=2em,xrightmargin=2em, aboveskip=1em, %设置边距
+        tabsize=4, %设置tab空格数
+        showspaces=false, %不显示空格
+        %belowcaptionskip=1\baselineskip,
+        stringstyle=\color{orange}
+        }
+
+\title{天河可伸缩hadoop集群使用说明文档{\small （V1.0）}}
+\author{\href{http://bigdata.genomics.cn/}{大数据计算组} \and 
+\href{mailto:huangzhibo@genomics.cn}{黄志博}}
+\date{\today}
+
+\begin{document}
+\maketitle
+%\vspace{2em}
+\tableofcontents
+\newpage
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+
+\section{概述}
+\label{sec:1}
+
+为实现资源的高效利用，根据华大天津同事的要求，决定在天津天河集群实现hadoop集群的可伸缩性。
+
+集群部署程序路径：/THL4/home/bgi\_gaea/software/GaeaPipeline/bin/hadoop\_cluster.py
+
+\section{集群部署方法}
+\subsection{在GaeaPipeline配置文件中设置}
+须在配置文件中指定部署集群的目录等（见下图）， hadoop集群会在生成脚本时自动部署并启动，在提交的流程任务完成时关闭。如果只启动了集群或出现其他集群没有成功关闭的情况，可使用集群部署程序直接进行关闭（见下一节）。
+\lstinputlisting[language=Python]{source/hadoop.cfg}
+\indent 以前的配置：
+\lstinputlisting[language=Python]{source/old_hadoop.cfg}
+
+\subsection{单独部署}
+如果不需要使用GaeaPipeline，则需要手动启停集群，此时需要直接用到hadoop\_cluster.py程序。使用结束后一定要注意关闭hadoop集群，以免长时间占用资源\footnote{默认需一周后自动关闭}。\\
+\indent 独立程序共有以下三个子命令：
+\lstinputlisting[]{source/hadoop_cluster.help}
+\subsubsection{start}
+PARTITION指定启动hadoop集群的队列。SOURCE\_DIR指部署hadoop所需的软件和配置文件所在的目录，为/THL4/home/bgi\_gaea/software/hadoop\_source。
+\lstinputlisting[]{source/start.help}
+\subsubsection{restart}
+\lstinputlisting[]{source/restart.help}
+\subsubsection{stop}
+同上
+
+
+\section{任务提交}
+hadoop的任务有两种提交任务的方式（以上两种情况通用）：
+\begin{itemize}
+\item 提交至任何一个空闲节点。
+\item 登陆至hadoop的master节点\footnote{根据程序提示或cluster\_dir下的cluster.json文件判断哪个是master节点}，直接运行任务。
+\end{itemize}
+
+\section{任务监控}
+访问监控网页的方法与原hadoop集群相同。监控网页的地址为master\_node\_ip:8088，如果master节点ip为121.104.22.0，则监控网页地址为121.104.22.0:8088 。
+
+\end{document}
