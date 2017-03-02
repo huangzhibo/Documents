@@ -1,6 +1,6 @@
 ## Variation Annotation Database
 ---
-### 转录本信息
+### 基因及转录本信息数据库
 1. **refgene**
  	- Description
  		- `absence` 	
