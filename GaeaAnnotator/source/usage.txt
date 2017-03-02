@@ -1,0 +1,9 @@
+ -c,--config <arg>      config file.
+    --cacheref          DistributedCache reference sequence file list
+    --debug             for debug.
+ -h,--help              help information.
+ -i,--input <arg>       input file(VCF).
+ -m,--mapperNum <arg>   mapper number.
+ -o,--output <arg>      output file of annotation results
+ -r,--reference <arg>   indexed reference sequence file list [null]
+    --verbose           display verbose information.
