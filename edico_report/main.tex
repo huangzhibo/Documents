@@ -1,0 +1,284 @@
+\documentclass[UTF8,10pt,a4paper]{ctexart}
+
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage{indentfirst}
+\usepackage{setspace}
+\usepackage{color}
+
+%font
+\usepackage{fontspec,xltxtra,xunicode}
+\setromanfont{STZhongsong}
+
+%section
+\ctexset{section/format=\Large\bfseries}
+
+
+%table
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{booktabs} %toprule...
+\usepackage{arydshln} %虚线
+\usepackage{dashrule} %虚线
+
+%list
+
+
+%figs
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float}
+\graphicspath{{./figs/}{./}{./figs2/}}
+
+%logo
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{\includegraphics[scale=0.1]{BGIlogo.png}}  %在此处插入logo.pdf图片
+
+%附录
+\usepackage[titletoc]{appendix}
+
+%超链接
+%\usepackage[hyperfootnotes=true]{hyperref}
+\usepackage[colorlinks,
+            linkcolor=red,
+            anchorcolor=blue,
+            citecolor=green,
+            urlcolor=blue]{hyperref}
+
+%原文照列
+\usepackage{verbatim}
+\usepackage{clrscode}
+\usepackage{listings} %插入代码
+
+\lstset{numbers=left, %设置行号位置
+        backgroundcolor=\color[RGB]{245,245,244},
+        basicstyle=\footnotesize,
+        showstringspaces=false,
+        numberstyle=\tiny, %设置行号大小
+        keywordstyle=\color{blue}, %设置关键字颜色
+        commentstyle=\color[cmyk]{1,0,1,0}, %设置注释颜色
+        frame=single, %设置边框格式
+   %     escapeinside=``, %逃逸字符(1左面的键)，用于显示中文
+       basicstyle=\scriptsize\ttfamily,
+        breaklines, %自动折行
+        extendedchars=false, %解决代码跨页时，章节标题，页眉等汉字不显示的问题
+        xleftmargin=2em,xrightmargin=2em, aboveskip=1em, %设置边距
+        tabsize=4, %设置tab空格数
+        showspaces=false, %不显示空格
+        %belowcaptionskip=1\baselineskip,
+        stringstyle=\color{orange}
+        }
+
+\title{edico性能及准确度评估{\small (v0.2)}}
+\author{\href{http://bigdata.genomics.cn/}{大数据计算组} \and
+\href{mailto:huangzhibo@genomics.cn}{黄志博}}
+\date{\today}
+
+%\author{\textcolor{blue}{huangzhibo@genomics.cn}
+
+\begin{document}
+\maketitle
+\vspace{3em}
+%\tableofcontents
+\tableofcontents\thispagestyle{empty}
+\newpage
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+
+%\setcounter{subsection}{0}
+
+\section{目的}
+评估edico节点性能及snp，indel，cnv类型变异检测的准确性。
+
+
+\section{说明}
+
+\subsection{数据}
+\begin{enumerate}
+%\item XtenHiseq NA12878 \\
+%	数据信息
+\item Zebra500 NA12878  38X
+{\footnotesize
+\begin{itemize}
+\item /hwfssz1/BIGDATA\_COMPUTING/data/NA12878/Zebra500\_NA12878\_WGS/NA12878\_read\_1.fq.gz
+\item /hwfssz1/BIGDATA\_COMPUTING/data/NA12878/Zebra500\_NA12878\_WGS/NA12878\_read\_2.fq.gz
+\end{itemize}
+}
+\end{enumerate}
+
+\subsection{reference版本}
+hg19
+
+\subsection{分析流程}
+\begin{enumerate}
+\item edico
+\item GATKBest (GATK Best Practices)
+\item GaeaHC (Gaea + hadoop streaming GATK HC)
+\item GaeaUG
+\begin{description}
+\item[注：]  各流程均不包含过滤步骤，未对vcf结果做额外处理（矫正过滤等）。
+\end{description}
+\end{enumerate}
+
+
+
+\subsection{精度评估软件及指标说明}
+\begin{enumerate}
+\item 评估软件
+\begin{itemize}
+\item RTG vcfeval
+\end{itemize}
+\item \href{https://note.youdao.com/share/?token=170F71A3F2494D089B29E2AD944A6ECA&gid=12269890}{评估指标说明}
+\begin{itemize}
+\item 真阳性位点（True positives）  ：  在标准集中存在，test.vcf中也存在的变异数。 
+\item 假阴性位点（False negatives）：  在标准集中存在，test.vcf中不存在的变异数。
+\item 假阳性位点（False positives） ：  在标准集中不存在， test.cf中存在的变异数。
+%\end{itemize}
+%\item 计算公式
+%\begin{itemize}
+\item Precision (PPV) 		： (true positives) / (true positives + false positives) 
+\item Recall (sensitivity)		： (true positives) / (true positives + false negatives) 
+\item F-measure			： 2 * precision * recall / (precision + recall)
+\end{itemize}
+\end{enumerate}
+
+
+\section{性能评估}
+\subsection{各流程所用计算资源}
+\begin{enumerate}
+\item edico 计算节点：cngb-edico-a23-1 (10.53.4.148)\\
+         CPU: Intel(R) Xeon(R) CPU E5-2690 v4 @ 2.60GHz, CPU核数 : 14,  逻辑CPU: 56\\
+	 内存: 256G
+\item GATKBest 计算节点：cngb-compute-e03-9 (10.53.0.39)\\
+	 CPU: Intel(R) Xeon(R) CPU E7-4830 v4 @ 2.00GHz, CPU核数 : 14,  逻辑CPU: 112\\
+	 内存: 512G
+\item GaeaHC计算节点： 10.53.20.[12-32]共20个计算节点\\
+	 CPU: Intel(R) Xeon(R) CPU E5-2650 v4 @ 2.20GHz, CPU核数 : 12,  逻辑CPU: 48\\
+	 内存: 256G
+\item GaeaUG 计算节点：同GaeaHC
+\end{enumerate}
+
+
+\subsection{各流程耗时}
+\begin{table}[htp]
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
+{\small
+\caption{各流程总耗时}
+\begin{center}
+\begin{tabular}{p{5cm}|p{5cm}}
+\hline
+流程 & 总耗时 \\
+\hline
+GATKBest & 42h24m \\
+edico & 36m \\
+GaeaHC\footnotemark[1] & 1h5m \\
+GaeaUG\footnotemark[1] & 1h \\
+\hline
+\end{tabular}
+\end{center}
+\label{default}
+}
+\end{table}
+\footnotetext[1]{不包含解压步骤}
+
+\section{变异检测精度评估}
+根据F-measure（Precision和Recall的调和平均数）的值来判断结果优劣，值越高越好。\\
+Threshold是变异的QUAL值，作为结果最优情况下的过滤阈值。
+\newpage
+\subsection{snp评估}
+%{\color{cyan}{\small \kaishu{Gaea + GATK HC：}}}
+\begin{itemize}
+\item ROC曲线图(根据QUAL值画)\\
+
+\begin{figure}[htbp]
+\begin{center}
+\label{snp}
+\includegraphics[width=15cm]{snp.pdf}
+\caption{ROC曲线图}
+\end{center}
+\end{figure}
+\item 评估指标数值\\
+\begin{table}[htp]
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
+{\small
+\caption{各流程评估指标}
+\begin{center}
+\begin{tabular}{p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}}
+\hline
+流程 & True-pos & False-pos & False-neg & Precision & Sensitivity & F-measure\\
+\hline
+GATKBest & 3176487 & 19672 & 16462 & 0.9938 & 0.9948 & 0.9943 \\
+edico & 3176461 & 19765 & 16488 & 0.9938 & 0.9948 & 0.9943 \\
+GaeaHC& 3176310 & 19902 & 16639 & 0.9938 & 0.9948 & 0.9943 \\
+GaeaUG & 3171140 & 26848 & 21809 & 0.9916 & 0.9932  & 0.9924\\
+\hline
+\end{tabular}
+\end{center}
+\label{default}
+}
+\begin{itemize}
+\item[*] {\kaishu {\small 根据QUAL阈值，取F-measure最大时的值}}
+\end{itemize}
+
+\end{table}
+\item snp评估结论 \\
+	edico、GATKBest和GaeaHC在snp上的结果差异很微小，而从真阳性（True-pos）个数和假阴性（False-pos）个数看，edico差于GATKBest， 优于GaeaHC和GaeaUG。
+\end{itemize}
+
+\subsection{indel评估}
+\begin{itemize}
+\item ROC曲线图(根据QUAL值画)\\
+
+\begin{figure}[htbp]
+\begin{center}
+\label{indel}
+\includegraphics[width=15cm]{indel.pdf}
+\caption{ROC曲线图}
+\end{center}
+\end{figure}
+\item 评估指标数值\\
+\begin{table}[htp]
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
+{\small
+\caption{各流程评估指标}
+\begin{center}
+\begin{tabular}{p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}}
+\hline
+流程 & True-pos & False-pos & False-neg & Precision & Sensitivity & F-measure\\
+\hline
+GATKBest & 356685 & 14100 & 12794 & 0.9620 & 0.9654 & 0.9637 \\
+edico & 355273 & 14789 & 14206 & 0.9600 & 0.9616 & 0.9608 \\
+GaeaHC& 356105 & 14437 & 13374 & 0.9610 & 0.9638 & 0.9624 \\
+GaeaUG & 335658 & 15440 & 33821 & 0.9560 & 0.9085  & 0.9316\\
+\hline
+\end{tabular}
+\end{center}
+\label{default}
+}
+\begin{itemize}
+\item[*] {\kaishu {\small 根据QUAL阈值，取F-measure最大时的值}}
+\end{itemize}
+\end{table}
+\item indel评估结论 \\
+	从indel结果看，edico的结果要差于GATKBest和GaeaHC， 优于GaeaUG。
+\end{itemize}
+
+\subsection{cnv评估}
+暂缺
+
+\section{总结}
+edico性能最好，用时只有36分钟。edico的snp结果与GATKBest差异很微小，但indel结果要稍差于GATKBest和GaeaHC。从趋势看，edico在检测较长的变异时效果相对较差。总体看，结果相差并不很大，在可接受范围内。下一步可进一步评估cnv结果看看。
+
+
+% \lstinputlisting[language=Python]{source/usage.txt}
+
+\begin{figure}[htbp]
+\begin{center}
+\label{variantType}
+%\includegraphics[width=15cm]{variantType.png}
+%\caption{要注释的变异类型}
+\end{center}
+\end{figure}
+
+
+\end{document}
