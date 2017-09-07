@@ -105,8 +105,6 @@
 
 \subsection{数据}
 \begin{enumerate}
-%\item XtenHiseq NA12878 \\
-%	数据信息
 \item Zebra500 NA12878 38X
 {\footnotesize
 \begin{itemize}
@@ -196,29 +194,6 @@ PrintRead & 05:52:13  & 15:26:21 & 26:20:33 & 0 & 0 & -\\
 }
 \end{table}
 
-%\begin{table}[htp]
-%\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
-%{\small
-%\caption{Sentieon各流程总耗时}
-%\begin{center}
-%\begin{tabular}{p{5cm}|p{5cm}}
-%\hline
-%流程 & 小时：分钟：秒 \\
-%\hline
-%BWA &  \\
-%Metrics & 00:08:40 \\
-%Dedup & 00:21:31 \\
-%Indel re-aligner & 00:21:15 \\
-%BSQR & 01:51:44 \\
-%Variant & 00:41:33 \\
-%总计 & 07:33:19 \\
-%\hline
-%\end{tabular}
-%\end{center}
-%\label{default}
-%}
-%\end{table}
-
 \section{变异检测精度评估}
 \subsection{精度评估软件及指标说明}
 \begin{enumerate}
@@ -226,14 +201,15 @@ PrintRead & 05:52:13  & 15:26:21 & 26:20:33 & 0 & 0 & -\\
 \begin{itemize}
 \item RTG vcfeval
 \end{itemize}
+\item 参考集
+\begin{itemize}
+\item GIAB NIST3.3
+\end{itemize}
 \item \href{https://note.youdao.com/share/?token=170F71A3F2494D089B29E2AD944A6ECA&gid=12269890}{评估指标说明}
 \begin{itemize}
 \item 真阳性位点（True positives）  ：  在标准集中存在，test.vcf中也存在的变异数。 
 \item 假阴性位点（False negatives）：  在标准集中存在，test.vcf中不存在的变异数。
 \item 假阳性位点（False positives） ：  在标准集中不存在， test.cf中存在的变异数。
-%\end{itemize}
-%\item 计算公式
-%\begin{itemize}
 \item Precision (PPV) 		： (true positives) / (true positives + false positives) 
 \item Recall (sensitivity)		： (true positives) / (true positives + false negatives) 
 \item F-measure			： 2 * precision * recall / (precision + recall)
@@ -270,6 +246,7 @@ Sentieon & 50.740 & 3176222 & 19434 & 16727 & 0.9939 & 0.9948  & 0.9943\\
 }
 \end{table}
 
+\newpage
 \subsubsection{snp精度ROC曲线图}
 \begin{figure}[htb]
 \begin{center}
