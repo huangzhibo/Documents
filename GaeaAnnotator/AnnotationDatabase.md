@@ -98,6 +98,8 @@
 	- Annotation Fields
 		- rsID
 		- dbSNP Common
+		- dbSNP GENEINFO
+		- dbSNP CAF
 	
 ---
 ### 基因信息数据库
@@ -112,7 +114,9 @@
 		- HGNC ID
 		- HGNC Gene
 		- HGNC pmID
-		
+		- HGNC EntrezGeneID : Entrez gene ID
+		- HGNC EnsGeneID : Ensembl gene ID
+		- HGNC OmimID
 		
 
 ---
@@ -149,6 +153,12 @@
 	- Download
 		- **hg19 & hg38**
 		`ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/`
+	- Annotation Fields
+		- CLNACC : Variant Accession and Versions
+		- CLNDBN : Variant disease name
+		- CLNDSDB: Variant disease database name
+		- CLNSIG : Variant Clinical Significance, 0 - Uncertain significance, 1 - not provided, 2 - Benign, 3 - Likely benign, 4 - Likely pathogenic, 5 - Pathogenic, 6 - drug response, 7 - histocompatibility, 255 - other
+		- CLNSRCID : Variant Clinical Channel IDs
 		
 4. **HGMD**
 	- Description
